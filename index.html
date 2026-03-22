@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lanches Gabriel & Gabriela</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+    .hero-bg { background: radial-gradient(ellipse at center, #3a0000 0%, #0a0a0a 70%); }
+    @keyframes spin360 { to { transform: rotateY(360deg); } }
+    .burger-spin { animation: spin360 8s linear infinite; transform-style: preserve-3d; }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 30px rgba(34,197,94,0.25); }
+      50%      { box-shadow: 0 0 60px rgba(34,197,94,0.55); }
+    }
+    .pix-card { animation: pulse-glow 2s ease-in-out infinite; }
+    @keyframes tick { from{opacity:1} to{opacity:0.5} }
+    .tick { animation: tick 1s ease-in-out infinite alternate; }
+  </style>
+</head>
+<body class="bg-[#0a0a0a] text-white">
+
+<!-- ═══ HEADER ═══ -->
+<header class="hero-bg min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-4">
+  <div class="absolute inset-0 pointer-events-none opacity-40"
+    style="background-image:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(200,0,10,.06) 60px,rgba(200,0,10,.06) 61px),
+           repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(200,0,10,.06) 60px,rgba(200,0,10,.06) 61px)"></div>
+  <div class="absolute top-1/2 left-1/2 w-[500px] h-[500px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-2/3"
+    style="background:radial-gradient(circle,rgba(200,0,10,.35) 0%,transparent 70%)"></div>
+
+  <div class="relative w-44 h-44 mb-6" style="perspective:800px">
+    <div class="burger-spin w-full h-full">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+        <defs><radialGradient id="bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD600" stop-opacity=".25"/><stop offset="100%" stop-color="#FFD600" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="100" cy="100" r="95" fill="url(#bg)"/>
+        <ellipse cx="100" cy="66" rx="62" ry="22" fill="#E8900A"/>
+        <ellipse cx="100" cy="62" rx="55" ry="14" fill="#F5A623"/>
+        <ellipse cx="88" cy="58" rx="5" ry="3" fill="#D4860A" transform="rotate(-15,88,58)"/>
+        <ellipse cx="108" cy="55" rx="5" ry="3" fill="#D4860A" transform="rotate(10,108,55)"/>
+        <ellipse cx="100" cy="53" rx="5" ry="3" fill="#D4860A"/>
+        <ellipse cx="100" cy="88" rx="66" ry="8" fill="#2E8B3A"/>
+        <rect x="36" y="93" width="128" height="9" rx="4" fill="#CC2200"/>
+        <rect x="33" y="100" width="134" height="7" rx="3" fill="#FFD600"/>
+        <ellipse cx="100" cy="109" rx="62" ry="8" fill="#8B3A12"/>
+        <ellipse cx="100" cy="124" rx="66" ry="12" fill="#C8710A"/>
+        <ellipse cx="100" cy="128" rx="66" ry="8" fill="#D4860A"/>
+      </svg>
+    </div>
+  </div>
+
+  <p class="text-xs tracking-[6px] uppercase text-red-500 mb-2 relative z-10">Manaus · AM</p>
+  <h1 class="bebas text-6xl md:text-8xl text-center leading-none relative z-10">
+    Lanches<br><span class="text-yellow-400">Gabriel & Gabriela</span>
+  </h1>
+  <p class="text-sm tracking-[5px] uppercase text-white/40 mt-3 relative z-10">Sabor de verdade · Preço justo</p>
+  <div class="flex gap-4 mt-10 flex-wrap justify-center relative z-10">
+    <a href="#cardapio" class="bebas text-lg tracking-widest bg-yellow-400 text-black px-8 py-3 rounded hover:bg-yellow-300 transition hover:-translate-y-1">Ver Cardápio</a>
+    <a href="#carrinho" class="bebas text-lg tracking-widest border border-white/25 px-8 py-3 rounded hover:border-yellow-400 hover:text-yellow-400 transition hover:-translate-y-1">Meu Carrinho</a>
+  </div>
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/30 text-xs tracking-[4px] uppercase animate-bounce">
+    <span>Rolar</span>
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</header>
+
+<!-- ═══ NAV ═══ -->
+<nav class="sticky top-0 z-50 bg-[#0a0a0a]/95 backdrop-blur border-b border-red-900/30">
+  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between gap-4 flex-wrap">
+    <span class="bebas text-xl text-yellow-400 tracking-widest">G&G Lanches</span>
+    <div class="flex gap-1 flex-wrap">
+      <a href="#cardapio" class="text-xs font-bold tracking-widest uppercase text-white/50 px-3 py-2 rounded hover:text-yellow-400 transition">Cardápio</a>
+      <a href="#combos"   class="text-xs font-bold tracking-widest uppercase text-white/50 px-3 py-2 rounded hover:text-yellow-400 transition">Combos</a>
+      <a href="#bebidas"  class="text-xs font-bold tracking-widest uppercase text-white/50 px-3 py-2 rounded hover:text-yellow-400 transition">Bebidas</a>
+      <a href="#carrinho" class="text-xs font-bold tracking-widest uppercase text-white/50 px-3 py-2 rounded hover:text-yellow-400 transition">Carrinho&nbsp;(<span id="nav-count">0</span>)</a>
+      <a href="#contato"  class="text-xs font-bold tracking-widest uppercase text-white/50 px-3 py-2 rounded hover:text-yellow-400 transition">Contato</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ CARDÁPIO ═══ -->
+<section id="cardapio" class="max-w-5xl mx-auto px-6 py-20">
+  <p class="text-xs tracking-[6px] uppercase text-red-500 font-bold mb-1">O que temos</p>
+  <h2 class="bebas text-5xl md:text-6xl mb-10">Nosso <span class="text-yellow-400">Cardápio</span></h2>
+  <div class="flex gap-2 flex-wrap mb-10" id="tabs">
+    <button class="tab-btn bg-red-700 border-red-700 text-white border-2 rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase" data-cat="lanches">🍔 Lanches</button>
+    <button class="tab-btn border-2 border-white/10 text-white/50 rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase hover:border-red-700 hover:text-white transition" data-cat="cachorros">🌭 Cachorros</button>
+    <button class="tab-btn border-2 border-white/10 text-white/50 rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase hover:border-red-700 hover:text-white transition" data-cat="pasteis">🥟 Pastéis</button>
+    <button class="tab-btn border-2 border-white/10 text-white/50 rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase hover:border-red-700 hover:text-white transition" data-cat="batata">🍟 Batata</button>
+    <button class="tab-btn border-2 border-white/10 text-white/50 rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase hover:border-red-700 hover:text-white transition" data-cat="salgados">🧆 Salgados</button>
+  </div>
+  <div id="cat-lanches"  class="menu-cat grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <div id="cat-cachorros" class="menu-cat hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <div id="cat-pasteis"   class="menu-cat hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <div id="cat-batata"    class="menu-cat hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <div id="cat-salgados"  class="menu-cat hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</section>
+
+<hr class="border-white/5 max-w-5xl mx-auto">
+
+<!-- ═══ COMBOS ═══ -->
+<section id="combos" class="max-w-5xl mx-auto px-6 py-20">
+  <p class="text-xs tracking-[6px] uppercase text-red-500 font-bold mb-1">Economia garantida</p>
+  <h2 class="bebas text-5xl md:text-6xl mb-10">Combos & <span class="text-yellow-400">Trios</span></h2>
+  <div id="combos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</section>
+
+<hr class="border-white/5 max-w-5xl mx-auto">
+
+<!-- ═══ BEBIDAS ═══ -->
+<section id="bebidas" class="max-w-5xl mx-auto px-6 py-20">
+  <p class="text-xs tracking-[6px] uppercase text-red-500 font-bold mb-1">Refresque-se</p>
+  <h2 class="bebas text-5xl md:text-6xl mb-2">Sucos <span class="text-yellow-400">Naturais</span></h2>
+  <p class="text-white/40 text-sm mb-10 tracking-widest">Sabores: Maracujá · Goiaba · Graviola</p>
+  <div id="sucos-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+</section>
+
+<hr class="border-white/5 max-w-5xl mx-auto">
+
+<!-- ═══ CARRINHO + PAGAMENTO ═══ -->
+<section id="carrinho" class="max-w-5xl mx-auto px-6 py-20">
+  <p class="text-xs tracking-[6px] uppercase text-red-500 font-bold mb-1">Seu pedido</p>
+  <h2 class="bebas text-5xl md:text-6xl mb-10">Meu <span class="text-yellow-400">Carrinho</span></h2>
+
+  <div id="cart-empty" class="text-center py-16 text-white/30">
+    <div class="text-6xl mb-4">🛒</div>
+    <p class="text-lg font-semibold">Seu carrinho está vazio</p>
+    <p class="text-sm mt-1">Adicione itens do cardápio acima</p>
+    <a href="#cardapio" class="inline-block mt-6 bebas text-base tracking-widest bg-red-700 px-6 py-3 rounded hover:bg-red-600 transition text-white">Ver Cardápio</a>
+  </div>
+
+  <div id="cart-content" class="hidden">
+    <div id="cart-items" class="flex flex-col gap-3 mb-6"></div>
+    <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-5 flex justify-between items-center mb-8">
+      <div>
+        <p class="text-white/40 text-xs font-bold tracking-widest uppercase">Total do pedido</p>
+        <p id="cart-total-display" class="bebas text-4xl text-yellow-400 mt-1">R$ 0,00</p>
+      </div>
+      <button onclick="limparCarrinho()" class="text-xs text-white/30 hover:text-red-400 border border-white/10 px-4 py-2 rounded-lg font-bold transition">Limpar</button>
+    </div>
+
+    <!-- FORMULÁRIO PIX -->
+    <div class="bg-[#141414] border border-red-900/30 rounded-2xl p-6 md:p-8">
+      <h3 class="bebas text-3xl tracking-widest text-white mb-1">Finalizar <span class="text-yellow-400">Pedido</span></h3>
+      <p class="text-white/40 text-sm mb-6">Preencha seus dados e pague com PIX</p>
+
+      <div id="form-pagamento">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div class="sm:col-span-2">
+            <label class="text-xs font-bold tracking-widest uppercase text-white/50 block mb-2">Nome completo</label>
+            <input id="pix-nome" type="text" placeholder="Seu nome"
+              class="w-full bg-[#1e1e1e] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-red-600 transition text-sm">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="text-xs font-bold tracking-widest uppercase text-white/50 block mb-2">E-mail <span class="text-red-500">*</span></label>
+            <input id="pix-email" type="email" placeholder="seu@email.com"
+              class="w-full bg-[#1e1e1e] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-red-600 transition text-sm">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="text-xs font-bold tracking-widest uppercase text-white/50 block mb-2">Telefone (opcional)</label>
+            <input id="pix-telefone" type="tel" placeholder="(92) 99999-9999"
+              class="w-full bg-[#1e1e1e] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-red-600 transition text-sm">
+          </div>
+        </div>
+        <button id="btn-pix" onclick="iniciarPix()"
+          class="w-full bebas text-2xl tracking-widest bg-green-600 hover:bg-green-500 text-white py-4 px-6 rounded-xl transition hover:-translate-y-1 flex items-center justify-center gap-3">
+          💚 Gerar PIX
+        </button>
+        <p class="text-white/20 text-xs text-center mt-3">
+          Requer backend <code class="text-yellow-400/60">server.js</code> em <code class="text-yellow-400/60">localhost:3001</code>
+        </p>
+      </div>
+
+      <!-- Loading -->
+      <div id="pix-loading" class="hidden text-center py-12">
+        <div class="inline-block w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-white/50 text-sm font-semibold">Gerando seu QR Code PIX...</p>
+      </div>
+
+      <!-- QR RESULT -->
+      <div id="pix-result" class="hidden mt-6">
+        <div id="status-badge" class="inline-flex items-center gap-2 bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs font-black tracking-widest uppercase px-4 py-2 rounded-full mb-6">
+          <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse inline-block"></span>
+          Aguardando pagamento
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div class="pix-card bg-white rounded-2xl p-5 flex flex-col items-center gap-3">
+            <p class="text-gray-700 text-xs font-black tracking-widest uppercase">Escaneie com seu banco</p>
+            <img id="pix-qr-img" src="" alt="QR Code PIX" class="w-52 h-52 object-contain rounded-xl">
+            <p class="text-gray-400 text-xs text-center">Abra o app do banco → PIX → Ler QR Code</p>
+          </div>
+          <div class="flex flex-col gap-4">
+            <div>
+              <p class="text-xs font-bold tracking-widest uppercase text-white/40 mb-2">Código copia e cola</p>
+              <div id="pix-code-text" class="bg-[#1e1e1e] border border-white/5 rounded-xl p-3 break-all text-xs text-white/60 font-mono leading-relaxed max-h-28 overflow-y-auto"></div>
+            </div>
+            <button onclick="copiarPix()"
+              class="bebas text-xl tracking-widest bg-green-600 hover:bg-green-500 text-white py-3 px-6 rounded-xl transition flex items-center justify-center gap-2">
+              <span id="copy-icon">📋</span><span id="copy-label">Copiar Código PIX</span>
+            </button>
+            <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-4 flex items-center gap-3">
+              <span class="text-2xl tick">⏱️</span>
+              <div>
+                <p class="text-xs text-white/30 font-bold tracking-widest uppercase">Expira em</p>
+                <p id="pix-timer" class="bebas text-3xl text-red-400">30:00</p>
+              </div>
+            </div>
+            <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-4">
+              <p class="text-xs text-white/30 font-bold tracking-widest uppercase mb-1">Valor a pagar</p>
+              <p id="pix-valor-display" class="bebas text-3xl text-yellow-400"></p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 bg-blue-900/20 border border-blue-500/20 rounded-xl p-3 text-blue-300 text-xs font-semibold">
+          💡 Após pagar, o status atualiza automaticamente em até 10 segundos.
+        </div>
+      </div>
+
+      <!-- SUCESSO -->
+      <div id="pix-sucesso" class="hidden text-center py-12">
+        <div class="text-7xl mb-4 animate-bounce">🎉</div>
+        <h3 class="bebas text-5xl text-green-400 mb-2">Pagamento Recebido!</h3>
+        <p class="text-white/50 text-sm mb-6">Obrigado! Seu pedido foi confirmado e está sendo preparado.</p>
+        <button onclick="novosPedido()" class="bebas text-xl tracking-widest bg-red-700 hover:bg-red-600 text-white px-8 py-3 rounded-xl transition">
+          Fazer Novo Pedido
+        </button>
+      </div>
+
+      <!-- ERRO -->
+      <div id="pix-erro" class="hidden mt-4 bg-red-900/30 border border-red-500/30 rounded-xl p-4 text-red-300 text-sm font-semibold">
+        <span id="pix-erro-msg"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="border-white/5 max-w-5xl mx-auto">
+
+<!-- ═══ CONTATO ═══ -->
+<section id="contato" class="max-w-5xl mx-auto px-6 py-20">
+  <p class="text-xs tracking-[6px] uppercase text-red-500 font-bold mb-1">Nos encontre</p>
+  <h2 class="bebas text-5xl md:text-6xl mb-10">Onde <span class="text-yellow-400">Estamos</span></h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-7">
+      <div class="w-11 h-11 rounded-lg bg-red-900/30 flex items-center justify-center text-xl mb-4">📍</div>
+      <h3 class="bebas text-xl tracking-widest text-yellow-400 mb-2">Endereço</h3>
+      <p class="text-white/50 text-sm leading-relaxed">Av. Mulateiro, 1465<br>Santa Etelvina<br>Manaus – AM, 69017-100</p>
+    </div>
+    <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-7">
+      <div class="w-11 h-11 rounded-lg bg-red-900/30 flex items-center justify-center text-xl mb-4">📞</div>
+      <h3 class="bebas text-xl tracking-widest text-yellow-400 mb-2">Contato</h3>
+      <a href="tel:+5592986108363" class="text-white/50 text-sm block hover:text-yellow-400 transition">(92) 98610-8363</a>
+      <a href="https://wa.me/5592986108363" target="_blank" class="text-green-400 text-sm font-bold mt-2 block">💬 WhatsApp</a>
+    </div>
+    <div class="bg-[#1e1e1e] border border-white/5 rounded-xl p-7">
+      <div class="w-11 h-11 rounded-lg bg-red-900/30 flex items-center justify-center text-xl mb-4">🕐</div>
+      <h3 class="bebas text-xl tracking-widest text-yellow-400 mb-2">Horário</h3>
+      <p class="text-white/50 text-sm leading-relaxed">Terça a Domingo<br>A partir das 17h</p>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-[#111] border-t border-white/5 text-center py-8 text-white/25 text-sm">
+  <p>© 2025 <strong class="text-yellow-400">Lanches Gabriel & Gabriela</strong> · Manaus, AM</p>
+  <p class="mt-1">Av. Mulateiro, 1465 – Santa Etelvina · (92) 98610-8363</p>
+</footer>
+
+<a href="https://wa.me/5592986108363" target="_blank"
+  class="fixed bottom-7 right-7 z-50 w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg shadow-green-500/40 hover:scale-110 transition-transform">
+  <svg viewBox="0 0 24 24" fill="white" class="w-7 h-7"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>

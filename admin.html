@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel — G&G Lanches</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family:'Nunito',sans-serif; }
+    .bebas { font-family:'Bebas Neue',sans-serif; }
+    @keyframes slideIn {
+      from { transform:translateX(120%); opacity:0; }
+      to   { transform:translateX(0);   opacity:1; }
+    }
+    .slide-in { animation: slideIn .4s cubic-bezier(.22,1,.36,1); }
+    @keyframes ping2 { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+    .ping2 { animation: ping2 1s ease-in-out infinite; }
+    .card-order { transition: all .25s; }
+    .card-order:hover { transform: translateY(-2px); }
+    /* scrollbar */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#111; }
+    ::-webkit-scrollbar-thumb { background:#333; border-radius:3px; }
+    /* status colors */
+    .s-pending    { background:#854d0e22; border-color:#ca8a04; color:#fbbf24; }
+    .s-approved   { background:#14532d22; border-color:#16a34a; color:#4ade80; }
+    .s-em_preparo { background:#7c2d1222; border-color:#ea580c; color:#fb923c; }
+    .s-pronto     { background:#1e3a5f22; border-color:#3b82f6; color:#60a5fa; }
+    .s-entregue   { background:#1a1a1a;   border-color:#555;    color:#aaa;    }
+    .s-cancelado  { background:#3b082222; border-color:#dc2626; color:#f87171; }
+  </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+
+<!-- TOPBAR -->
+<header class="sticky top-0 z-50 bg-[#0f0f0f] border-b border-white/5 px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
+  <div class="flex items-center gap-3">
+    <span class="text-2xl">🍔</span>
+    <div>
+      <h1 class="bebas text-2xl text-yellow-400 leading-none tracking-widest">G&G Lanches</h1>
+      <p class="text-xs text-white/30 font-bold tracking-widest uppercase">Painel do Comerciante</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <!-- Status WS -->
+    <div id="ws-status" class="flex items-center gap-2 text-xs font-bold text-red-400">
+      <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Desconectado
+    </div>
+    <!-- Filtro status -->
+    <select id="filtro-status" onchange="carregarPedidos()"
+      class="bg-[#1e1e1e] border border-white/10 rounded-lg px-3 py-2 text-sm text-white/70 focus:outline-none focus:border-yellow-400">
+      <option value="todos">Todos</option>
+      <option value="pending">Aguardando PIX</option>
+      <option value="approved">Pagos</option>
+      <option value="em_preparo">Em preparo</option>
+      <option value="pronto">Prontos</option>
+      <option value="entregue">Entregues</option>
+      <option value="cancelado">Cancelados</option>
+    </select>
+    <!-- Filtro data -->
+    <input type="date" id="filtro-data" onchange="carregarPedidos()"
+      class="bg-[#1e1e1e] border border-white/10 rounded-lg px-3 py-2 text-sm text-white/70 focus:outline-none focus:border-yellow-400">
+    <button onclick="carregarPedidos()" class="bebas tracking-widest text-sm bg-yellow-400 text-black px-4 py-2 rounded-lg hover:bg-yellow-300 transition">
+      Atualizar
+    </button>
+  </div>
+</header>
+
+<!-- CARDS RESUMO -->
+<div class="max-w-7xl mx-auto px-6 pt-8 pb-4 grid grid-cols-2 md:grid-cols-4 gap-4" id="resumo-cards">
+  <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-5">
+    <p class="text-xs font-bold tracking-widest uppercase text-white/30 mb-1">Faturamento Hoje</p>
+    <p id="total-dia" class="bebas text-4xl text-yellow-400">R$ 0,00</p>
+  </div>
+  <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-5">
+    <p class="text-xs font-bold tracking-widest uppercase text-white/30 mb-1">Pedidos Pagos</p>
+    <p id="qtd-pagos" class="bebas text-4xl text-green-400">0</p>
+  </div>
+  <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-5">
+    <p class="text-xs font-bold tracking-widest uppercase text-white/30 mb-1">Aguardando PIX</p>
+    <p id="qtd-pendentes" class="bebas text-4xl text-yellow-400">0</p>
+  </div>
+  <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-5">
+    <p class="text-xs font-bold tracking-widest uppercase text-white/30 mb-1">Ticket Médio</p>
+    <p id="ticket-medio" class="bebas text-4xl text-blue-400">R$ 0,00</p>
+  </div>
+</div>
+
+<!-- GRÁFICO SEMANA -->
+<div class="max-w-7xl mx-auto px-6 pb-6">
+  <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-5">
+    <p class="text-xs font-bold tracking-widest uppercase text-white/30 mb-4">Faturamento — Últimos 7 dias</p>
+    <div id="grafico-semana" class="flex items-end gap-2 h-24"></div>
+  </div>
+</div>
+
+<!-- GRID PEDIDOS -->
+<div class="max-w-7xl mx-auto px-6 pb-12">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="bebas text-3xl tracking-widest">Pedidos <span class="text-yellow-400" id="count-pedidos"></span></h2>
+    <p class="text-xs text-white/30 font-bold">Atualiza em tempo real via WebSocket</p>
+  </div>
+
+  <div id="lista-pedidos" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <!-- cards gerados pelo JS -->
+  </div>
+
+  <div id="empty-state" class="hidden text-center py-20 text-white/20">
+    <div class="text-6xl mb-4">📋</div>
+    <p class="text-lg font-semibold">Nenhum pedido encontrado</p>
+  </div>
+</div>
+
+<!-- TOAST de novo pedido -->
+<div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+<script>
+const BACKEND = 'http://localhost:3001';
+let pedidos = [];
+
+// ── FORMATAÇÃO ─────────────────────────────────────
+function fmtBRL(v) { return 'R$ ' + Number(v).toFixed(2).replace('.',','); }
+function fmtData(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+}
+
+// ── WEBSOCKET ───────────────────────────────────────
+function conectarWS() {
+  const ws = new WebSocket(`ws://localhost:3001`);
+  const statusEl = document.getElementById('ws-status');
+
+  ws.onopen = () => {
+    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 inline-block ping2"></span> Ao vivo';
+    statusEl.className = 'flex items-center gap-2 text-xs font-bold text-green-400';
+  };
+
+  ws.onclose = () => {
+    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Desconectado';
+    statusEl.className = 'flex items-center gap-2 text-xs font-bold text-red-400';
+    setTimeout(conectarWS, 3000); // reconecta
+  };
+
+  ws.onmessage = ({ data }) => {
+    const { event, data: payload } = JSON.parse(data);
+
+    if (event === 'novo_pedido') {
+      mostrarToast(`🆕 Novo pedido de ${payload.nome || 'cliente'}`, 'yellow');
+      tocarSom();
+      carregarPedidos();
+      carregarResumo();
+    }
+    if (event === 'pedido_pago') {
+      mostrarToast(`✅ PIX aprovado! Pedido #${payload.id} — ${payload.nome}`, 'green');
+      tocarSom();
+      carregarPedidos();
+      carregarResumo();
+    }
+    if (event === 'pedido_atualizado') {
+      atualizarCardLocal(payload);
+      carregarResumo();
+    }
+  };
+}
+
+// ── SOM DE ALERTA ──────────────────────────────────
+function tocarSom() {
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
+  } catch {}
+}
+
+// ── TOAST ──────────────────────────────────────────
+function mostrarToast(msg, cor = 'yellow') {
+  const colors = {
+    yellow: 'bg-yellow-400 text-black',
+    green:  'bg-green-500 text-white',
+    red:    'bg-red-500 text-white',
+  };
+  const el = document.createElement('div');
+  el.className = `slide-in pointer-events-auto ${colors[cor]} rounded-xl px-5 py-3 font-bold text-sm shadow-2xl max-w-xs`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+// ── CARREGAR RESUMO ────────────────────────────────
+async function carregarResumo() {
+  try {
+    const r = await fetch(`${BACKEND}/api/resumo`);
+    const d = await r.json();
+
+    document.getElementById('total-dia').textContent     = fmtBRL(d.totalDia.total);
+    document.getElementById('qtd-pagos').textContent     = d.totalDia.qtd;
+    document.getElementById('qtd-pendentes').textContent = d.pendentes.qtd;
+    const medio = d.totalDia.qtd > 0 ? d.totalDia.total / d.totalDia.qtd : 0;
+    document.getElementById('ticket-medio').textContent  = fmtBRL(medio);
+
+    // Gráfico semana
+    renderGrafico(d.semana);
+  } catch {}
+}
+
+function renderGrafico(semana) {
+  const max = Math.max(...semana.map(s => s.total), 1);
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const el = document.getElementById('grafico-semana');
+  el.innerHTML = semana.map(s => {
+    const pct = Math.max((s.total / max) * 100, 4);
+    const data = new Date(s.dia + 'T12:00:00');
+    const dia = dias[data.getDay()];
+    return `
+      <div class="flex flex-col items-center gap-1 flex-1">
+        <span class="text-xs text-white/40 font-bold">${fmtBRL(s.total)}</span>
+        <div class="w-full bg-yellow-400/80 rounded-t-lg transition-all" style="height:${pct}%"></div>
+        <span class="text-xs text-white/40 font-bold">${dia}</span>
+      </div>`;
+  }).join('') || '<p class="text-white/20 text-sm">Sem dados</p>';
+}
+
+// ── CARREGAR PEDIDOS ───────────────────────────────
+async function carregarPedidos() {
+  const status = document.getElementById('filtro-status').value;
+  const data   = document.getElementById('filtro-data').value;
+  let url = `${BACKEND}/api/pedidos?`;
+  if (status !== 'todos') url += `status=${status}&`;
+  if (data) url += `data=${data}`;
+
+  try {
+    const r = await fetch(url);
+    pedidos = await r.json();
+    renderPedidos();
+  } catch {
+    mostrarToast('Erro ao carregar pedidos. Backend online?', 'red');
+  }
+}
+
+function renderPedidos() {
+  const lista = document.getElementById('lista-pedidos');
+  const empty = document.getElementById('empty-state');
+  document.getElementById('count-pedidos').textContent = pedidos.length > 0 ? `(${pedidos.length})` : '';
+
+  if (pedidos.length === 0) {
+    lista.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  lista.innerHTML = pedidos.map(p => cardPedido(p)).join('');
+}
+
+function cardPedido(p) {
+  const statusClass = {
+    pending:    's-pending',
+    approved:   's-approved',
+    em_preparo: 's-em_preparo',
+    pronto:     's-pronto',
+    entregue:   's-entregue',
+    cancelado:  's-cancelado',
+  }[p.status] || 's-pending';
+
+  const itens = Array.isArray(p.itens) ? p.itens : [];
+  const itensHtml = itens.length > 0
+    ? itens.map(i => `<span class="text-xs bg-[#111] px-2 py-0.5 rounded-full text-white/50">${i.qty || 1}× ${i.nome || i}</span>`).join(' ')
+    : `<span class="text-xs text-white/20">${p.descricao || '—'}</span>`;
+
+  const botoesStatus = `
+    <div class="flex gap-2 flex-wrap mt-3">
+      <button onclick="mudarStatus(${p.id},'em_preparo')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-900/40 text-orange-400 hover:bg-orange-800/60 transition border border-orange-700/40">🔥 Preparo</button>
+      <button onclick="mudarStatus(${p.id},'pronto')"     class="text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-900/40 text-blue-400 hover:bg-blue-800/60 transition border border-blue-700/40">✅ Pronto</button>
+      <button onclick="mudarStatus(${p.id},'entregue')"   class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#1a1a1a] text-white/40 hover:text-white/70 transition border border-white/10">🛵 Entregue</button>
+      <button onclick="mudarStatus(${p.id},'cancelado')"  class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-900/40 text-red-400 hover:bg-red-800/60 transition border border-red-700/40">❌ Cancelar</button>
+    </div>`;
+
+  return `
+    <div id="card-${p.id}" class="card-order bg-[#1a1a1a] border border-white/5 rounded-2xl p-5 flex flex-col gap-3">
+      <!-- header -->
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <p class="font-black text-white text-sm">#${p.id} · ${p.nome || '—'}</p>
+          <p class="text-xs text-white/30 mt-0.5">${p.email} ${p.telefone ? '· '+p.telefone : ''}</p>
+        </div>
+        <span class="text-xs font-black px-3 py-1 rounded-full border ${statusClass} whitespace-nowrap">${p.status_label}</span>
+      </div>
+      <!-- itens -->
+      <div class="flex flex-wrap gap-1">${itensHtml}</div>
+      <!-- total e hora -->
+      <div class="flex items-center justify-between">
+        <span class="bebas text-2xl text-yellow-400">${fmtBRL(p.total)}</span>
+        <span class="text-xs text-white/25">${fmtData(p.criado_em)}</span>
+      </div>
+      <!-- botões (só para pagos ou em andamento) -->
+      ${['approved','em_preparo','pronto'].includes(p.status) ? botoesStatus : ''}
+    </div>`;
+}
+
+function atualizarCardLocal(pedido) {
+  const el = document.getElementById(`card-${pedido.id}`);
+  if (el) {
+    const novo = document.createElement('div');
+    novo.innerHTML = cardPedido(pedido);
+    el.replaceWith(novo.firstElementChild);
+  } else {
+    carregarPedidos();
+  }
+}
+
+async function mudarStatus(id, status) {
+  try {
+    await fetch(`${BACKEND}/api/pedidos/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+  } catch {
+    mostrarToast('Erro ao atualizar status.', 'red');
+  }
+}
+
+// ── INIT ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Seta data de hoje no filtro
+  document.getElementById('filtro-data').value = new Date().toISOString().split('T')[0];
+  conectarWS();
+  carregarResumo();
+  carregarPedidos();
+  // Atualiza resumo a cada 30s
+  setInterval(carregarResumo, 30_000);
+});
+</script>
+</body>
+</html>
