@@ -36,22 +36,22 @@ const CARDAPIO = {
 };
 
 const COMBOS = [
-  { id: 'c2xs',  nome: '2 X-Salada + Pet 1,5L',         preco: 25.00, badge: 'Combo' },
-  { id: 'c3xs',  nome: '3 X-Salada + Pet 1,5L',         preco: 30.00, badge: 'Combo' },
-  { id: 'c4xs',  nome: '4 X-Salada + Pet 1,5L',         preco: 40.00, badge: 'Combo' },
-  { id: 'c5xs',  nome: '5 X-Salada + Pet 1,5L',         preco: 50.00, badge: 'Combo' },
-  { id: 'c3k',   nome: '3 Kikão',                        preco: 23.00, badge: 'Combo' },
-  { id: 'c3kp',  nome: '3 Kikão + Pet 1,5L',            preco: 26.00, badge: 'Combo' },
-  { id: 'c4kp',  nome: '4 Kikão + Pet 1,5L',            preco: 33.00, badge: 'Combo' },
-  { id: 'c5kp',  nome: '5 Kikão + Pet 1,5L',            preco: 44.00, badge: 'Combo' },
-  { id: 'c6kp',  nome: '6 Kikão + Pet 1,5L',            preco: 50.00, badge: 'Combo' },
-  { id: 'c7kp',  nome: '7 Kikão + Pet 1,5L',            preco: 58.00, badge: 'Combo' },
-  { id: 'c8kp',  nome: '8 Kikão + Pet 1,5L',            preco: 66.00, badge: 'Combo' },
-  { id: 'c9kp',  nome: '9 Kikão + Pet 1,5L',            preco: 74.00, badge: 'Combo' },
-  { id: 'c10k',  nome: '10 Kikão + Pet 1,5L',           preco: 82.00, badge: 'Combo' },
-  { id: 'trio1', nome: '1 X-Salada + Batata (M) + Lata', preco: 26.00, badge: 'Trio'  },
-  { id: 'trio2', nome: '1 X-Salada + Pastel + Lata',     preco: 20.00, badge: 'Trio'  },
-  { id: 'trio3', nome: '1 Kikão + Salgado + Lata',       preco: 18.00, badge: 'Trio'  },
+  { id: 'c2xs',  nome: '2 X-Salada + Pet 1,5L',         preco: 0.01, badge: 'Combo' },
+  { id: 'c3xs',  nome: '3 X-Salada + Pet 1,5L',         preco: 0.01, badge: 'Combo' },
+  { id: 'c4xs',  nome: '4 X-Salada + Pet 1,5L',         preco: 0.01, badge: 'Combo' },
+  { id: 'c5xs',  nome: '5 X-Salada + Pet 1,5L',         preco: 0.01, badge: 'Combo' },
+  { id: 'c3k',   nome: '3 Kikão',                        preco: 0.01, badge: 'Combo' },
+  { id: 'c3kp',  nome: '3 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c4kp',  nome: '4 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c5kp',  nome: '5 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c6kp',  nome: '6 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c7kp',  nome: '7 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c8kp',  nome: '8 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c9kp',  nome: '9 Kikão + Pet 1,5L',            preco: 0.01, badge: 'Combo' },
+  { id: 'c10k',  nome: '10 Kikão + Pet 1,5L',           preco: 0.01, badge: 'Combo' },
+  { id: 'trio1', nome: '1 X-Salada + Batata (M) + Lata', preco: 0.01, badge: 'Trio'  },
+  { id: 'trio2', nome: '1 X-Salada + Pastel + Lata',     preco: 0.01, badge: 'Trio'  },
+  { id: 'trio3', nome: '1 Kikão + Salgado + Lata',       preco: 0.01, badge: 'Trio'  },
 ];
 
 const SUCOS = [
@@ -176,7 +176,7 @@ let countdownTimer = null;
 let pixCodigoAtual = '';
 
 // ⚠️ SUBSTITUA pela sua Public Key TEST-
-const MP_PUBLIC_KEY = 'TEST-cb0fc43a-2170-42f2-8164-354ff01c2d4a';
+const MP_PUBLIC_KEY = 'APP_USR-3ca2146d-f759-4b24-83ee-76b5aedacc9a';
 const BACKEND_URL   = 'http://localhost:3001';
 
 async function iniciarPix() {
