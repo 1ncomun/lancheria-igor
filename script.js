@@ -177,7 +177,7 @@ let pixCodigoAtual = '';
 
 // ⚠️ SUBSTITUA pela sua Public Key TEST-
 const MP_PUBLIC_KEY = 'APP_USR-3ca2146d-f759-4b24-83ee-76b5aedacc9a';
-const BACKEND_URL   = 'http://localhost:3001';
+const BACKEND_URL   = 'https://lancheria-igor.onrender.com';
 
 async function iniciarPix() {
   const email    = document.getElementById('pix-email').value.trim();
