@@ -116,7 +116,7 @@
 <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
 <script>
-const BACKEND = 'http://localhost:3001';
+const BACKEND = 'https://lancheria-igor.onrender.com/';
 let pedidos = [];
 
 // ── FORMATAÇÃO ─────────────────────────────────────
@@ -128,7 +128,7 @@ function fmtData(d) {
 
 // ── WEBSOCKET ───────────────────────────────────────
 function conectarWS() {
-  const ws = new WebSocket(`ws://localhost:3001`);
+  const ws = new WebSocket(`ws://lancheria-igor.onrender.com/`);
   const statusEl = document.getElementById('ws-status');
 
   ws.onopen = () => {
