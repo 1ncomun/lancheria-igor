@@ -1,10 +1,9 @@
 {
-  "name": "files",
+  "name": "sitedosguridacatequese",
   "version": "1.0.0",
-  "description": "| Arquivo     | Função                                      | |-------------|---------------------------------------------| | `index.html`| Site completo com cardápio, carrinho e form PIX | | `script.js` | Lógica do carrinho + fetch PIX + polling    | | `server.js` | Backend Node/Express com Mercado Pago       |",
-  "main": "script.js",
+  "description": "G&G Lanches — Backend PIX + Painel Admin",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "keywords": [],
@@ -12,12 +11,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "better-sqlite3": "^12.8.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "empress": "^0.0.2",
     "express": "^5.2.1",
     "mercadopago": "^2.12.0",
+    "sqlite3": "^5.1.7",
     "ws": "^8.20.0"
   }
 }
