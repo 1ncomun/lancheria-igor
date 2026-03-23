@@ -27,7 +27,7 @@ const PORT   = process.env.PORT || 3001;
 
 // ── MERCADOPAGO ──────────────────────────────────────
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN || 'TEST-SUA-ACCESS-TOKEN-AQUI',
+  accessToken: process.env.MP_ACCESS_TOKEN || 'APP_USR-5217924685059140-032218-35ba92e483328e2b27d63e8d2f175344-1959256106',
   options: { timeout: 5000 },
 });
 const mpPayment = new Payment(client);
@@ -233,6 +233,6 @@ app.get('/admin', (_req, res) => res.sendFile(path.join(__dirname, 'admin.html')
 server.listen(PORT, () => {
   console.log(`\n🍔 G&G Lanches → http://localhost:${PORT}`);
   console.log(`🖥️  Painel admin → http://localhost:${PORT}/admin\n`);
-  if (!process.env.MP_ACCESS_TOKEN || process.env.MP_ACCESS_TOKEN.includes('SUA-ACCESS'))
+  if (!process.env.MP_ACCESS_TOKEN || process.env.MP_ACCESS_TOKEN.includes('APP_USR-5217924685059140-032218-35ba92e483328e2b27d63e8d2f175344-1959256106'))
     console.warn('⚠️  Configure MP_ACCESS_TOKEN no .env\n');
 });
